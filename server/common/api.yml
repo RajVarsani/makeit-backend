@@ -1,71 +1,138 @@
 swagger: "2.0"
 info:
   version: 1.0.0
-  title: makeit
-  description: My cool app
+  title: Make-It
+  description: "An eCommerce platform with a focus on customizable products."
 basePath: /api/v1
-tags:
-  - name: Examples
-    description: Simple example endpoints
-  - name: Specification
-    description: The swagger API specification
 
 consumes:
   - application/json
 produces:
   - application/json
 
-
 definitions:
-  ExampleBody:
+  User:
     type: object
-    title: example
-    required:
-      - name
     properties:
+      user_id:
+        type: string
       name:
         type: string
-        example: no_stress
+      email:
+        type: string
+      password:
+        type: string
+      address:
+        type: array
+        items:
+          type: string
+      wishlist:
+        type: array
+        items:
+          type: string
+      mobile:
+        type: number
+      role:
+        type: string
+  Seller:
+    type: object
+    title: Seller
+    required:
+    properties:
+      seller_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      user_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      shop_name:
+        type: string
+        example: "John Doe"
+      gst_in:
+        type: string
+        example: "GSTIN"
+      pickup_address:
+        type: object
+        properties:
+          address:
+            type: string
+            example: "Address"
+          pincode:
+            type: string
+            example: "Pincode"
+        example: { "address": "Address", "pincode": "Pincode" }
 
 paths:
-  /examples:
-    get:
-      tags:
-        - Examples
-      description: Fetch all examples
-      responses:
-        200:
-          description: Returns all examples
+  /auth/signup:
     post:
       tags:
-        - Examples
-      description: Create a new example
+        - Auth
+      summary: Sign up
+      description: Sign up to the application
       parameters:
-        - name: example
-          in: body
-          description: an example
-          required: true
-          schema: 
-            $ref: "#/definitions/ExampleBody"
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              mobile:
+                type: number
+              email:
+                type: string
+              password:
+                type: string
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
       responses:
         200:
-          description: Returns all examples
+          description: Successful sign in
+        401:
+          description: Invalid password or username
 
-  /examples/{id}:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login
+      description: Login to the application
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful login
+        401:
+          description: Invalid password or username
+
+  /user/getuserdata:
     get:
       tags:
-        - Examples
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: The id of the example to retrieve
-          type: integer
+        - User
+      security:
+        - bearerAuth: []
+      summary: Get user data
+
       responses:
         200:
-          description: Return the example with the specified id
+          description: Return the user data
         404:
-          description: Example not found
+          description: User not found / Unauthorized
 
   /spec:
     get:
