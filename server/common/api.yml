@@ -61,6 +61,126 @@ definitions:
             type: string
             example: "Pincode"
         example: { "address": "Address", "pincode": "Pincode" }
+  Order:
+    type: object
+    properties:
+      order_id:
+        type: string
+      user_id:
+        type: string
+      product_id:
+        type: string
+      size:
+        type: string
+      status:
+        type: object
+        properties:
+          status:
+            type: string
+          date:
+            type: string
+          TextData:
+            type: array
+            items:
+              type: string
+          ImageData:
+            type: array
+            items:
+              type: string
+        created_at:
+          type: number
+  Cart:
+    type: object
+    title: Cart
+    required:
+    properties:
+      product_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      size:
+        type: string
+        example: XL
+      user_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      attachmentFiles:
+        type: array
+        items:
+          type: string
+          example: ["https://bit.ly/3zCnHVv", "https://bit.ly/3zCnHVv"]
+  Product:
+    type: object
+    title: Product
+    required:
+    properties:
+      product_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      Title:
+        type: string
+        example: London Hills Men's Regular Fit Printed Full Sleeve Soft & Strong T-Shirt
+      price:
+        type: number
+        example: 499
+      user_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      images:
+        type: array
+        items:
+          type: string
+        example: ["https://bit.ly/3zCnHVv", "https://bit.ly/3zCnHVv"]
+
+      requiredAttachments:
+        type: array
+        items:
+          type: object
+          properties:
+            title:
+              type: string
+            description:
+              type: string
+        example:
+          [
+            { title: "Front", description: "Description of Front" },
+            { title: "Back", description: "Description of Back" },
+          ]
+
+      specification:
+        type: array
+        example:
+          [
+            { "name": "Neck", "value": "Polo" },
+            { "name": "Neck", "value": "Polo" },
+          ]
+      various_size:
+        type: array
+        items:
+          type: string
+        example: ["S", "M", "L", "XL"]
+  Review:
+    type: object
+    title: Review
+    required:
+    properties:
+      review_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      product_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      user_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      description:
+        type: string
+        example: "This is a good product"
+      rating:
+        type: number
+        example: 4
+      timestamp:
+        type: number
+        example: 1569098983
 
 paths:
   /auth/signup:
@@ -133,6 +253,224 @@ paths:
           description: Return the user data
         404:
           description: User not found / Unauthorized
+  /user/becomeaseller:
+    post:
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      summary: Become a seller
+      description: Become a seller
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              shop_name:
+                type: string
+              gst_id:
+                type: string
+              pickup_address:
+                type: object
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful became a seller
+        401:
+          description: Invalid password or username
+  /user/addAddress:
+    post:
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      summary: Add address
+      parameters:
+        - in: body
+          name: body
+          description: Add address
+          schema:
+            type: object
+          properties:
+            Address:
+              type: string
+            pincode:
+              type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the user data
+        404:
+          description: User not found / Unauthorized
+  /user/addtocart:
+    post:
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: Add to cart
+      description: Add to cart
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              product_id:
+                type: string
+              size:
+                type: string
+              attachedFiles:
+                type: array
+                items:
+                  type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful added to cart
+        401:
+          description: Invalid password or username
+  /user/removefromcart:
+    delete:
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: Remove from cart
+      description: Remove from cart
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              cart_id:
+                type: string
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful removed from cart
+        401:
+          description: Invalid password or username
+  /user/getcart:
+    get:
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: Get cart
+      description: Get cart
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the cart
+        404:
+          description: User not found / Unauthorized
+  /user/addtowishlist:
+    post:
+      tags:
+        - Wishlist
+      security:
+        - bearerAuth: []
+      summary: Add wishlist
+      description: Add wishlist
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              product_id:
+                type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful added wishlist
+        401:
+          description: Invalid password or username
+  /user/getwishlist:
+    get:
+      tags:
+        - Wishlist
+      security:
+        - bearerAuth: []
+      summary: Get wishlist
+      description: Get wishlist
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the user data
+        404:
+          description: User not found / Unauthorized
+  /user/movetowishlist:
+    post:
+      tags:
+        - Wishlist
+      security:
+        - bearerAuth: []
+      Summary: Move wishlist
+      Description: Move a product to wishlist
+      parameters:
+        - in: body
+          name: body
+          description: Move product to wishlist
+          schema:
+            type: object
+            properties:
+              cart_id:
+                type: string
+
+      Consumes:
+        - application/json
+      Produces:
+        - application/json
+  /user/removefromwishlist:
+    delete:
+      tags:
+        - Wishlist
+      security:
+        - bearerAuth: []
+      Summary: Remove from wishlist
+      Description: Remove from wishlist
+      parameters:
+        - in: body
+          name: body
+          description: Remove a product from wishlist
+          schema:
+            type: object
+            properties:
+              product_id:
+                type: string
+
+      Consumes:
+        - application/json
+      Produces:
+        - application/json
 
   /spec:
     get:
