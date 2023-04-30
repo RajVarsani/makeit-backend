@@ -4,8 +4,9 @@ import userService from "./user.service";
 import productService from "./product.service";
 import Product from "../../models/Product";
 import Seller from "../../models/Seller";
+import BlockchainService from "./blockchain.service";
 class OrderService {
-  async createOrder(uid, body) {
+  async createOrder(uid, body, itemIndex) {
     const order = {
       product_id: body.product_id,
       size: body.size,
@@ -21,6 +22,7 @@ class OrderService {
     if (order.attachedFiles === null)
       order.status["Delivered"] = new Date().getTime();
     const newOrder = await Order.create(order);
+    this.handlePushOrder(newOrder, itemIndex);
     return newOrder._id;
   }
   async createCartOrder(uid, body) {
@@ -30,6 +32,7 @@ class OrderService {
       const newOrder = await this.createOrder(uid, {
         ...carts[i]["_doc"],
         address: body.address,
+        i,
       });
       orders.push(newOrder._id);
     }
@@ -108,6 +111,36 @@ class OrderService {
     console.log(order, seller, product);
     if (uid !== order.user_id && uid !== seller.user_id) return null;
     return order;
+  }
+
+  async handlePushOrder(order, itemIndex) {
+    try {
+      const status = Object.keys(order.status).reduce((acc, curr) => {
+        if (acc) {
+          if (order.status[curr] >= order.status[acc]) {
+            return curr;
+          } else {
+            return acc;
+          }
+        }
+        return curr;
+      }, null);
+
+      const productData = await Product.findById(order.product_id)
+        .select("user_id")
+        .lean();
+
+      await BlockchainService.pushOrder(
+        order._id,
+        order.product_id,
+        order.user_id,
+        status,
+        productData.user_id,
+        itemIndex
+      );
+    } catch (e) {
+      console.log("Error in handlePushOrder", e);
+    }
   }
 }
 export default new OrderService();
