@@ -8,7 +8,7 @@
 
  
 <div align="center">
- <h3><a href="http://makeit.centralindia.cloudapp.azure.com:8080/api-explorer/">Explore Backend🔗</a></h3>
+ <h3><a href="https://makeit-backend.vercel.app/api-explorer/">Explore Backend🔗</a></h3>
 </div>
 <br/>
  
