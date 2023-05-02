@@ -8,7 +8,7 @@
 
  
 <div align="center">
- <h3><a href="http://makeit.centralindia.cloudapp.azure.com:8080/api-explorer/">Explore Backend🔗</a></h3>
+ <h3><a href="https://makeit-backend.vercel.app/api-explorer/">Explore Backend🔗</a></h3>
 </div>
 <br/>
  
@@ -23,7 +23,7 @@ Project is created with:
 * jsonwebtoken version: 8.5.1
 * multer version: 1.4.4
 * bcrypt version: 5.0.1
-* deployment: Microsoft azure 
+* deployment: Vercel 
 * swagger
 
 
