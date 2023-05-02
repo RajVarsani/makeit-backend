@@ -110,7 +110,7 @@ class ProductServices {
       const products = await Product.aggregate([
         {
           $search: {
-            index: "Search index",
+            index: "Searchindex",
             autocomplete: {
               query: keyword,
               path: "search_key",
@@ -125,7 +125,7 @@ class ProductServices {
       const products = await Product.aggregate([
         {
           $search: {
-            index: "Search index",
+            index: "Searchindex",
             autocomplete: {
               query: keyword,
               path: "search_key",
